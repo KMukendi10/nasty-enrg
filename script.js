@@ -39,6 +39,31 @@
     rev.forEach(function (r) { io.observe(r); });
   } else rev.forEach(function (r) { r.classList.add('in-view'); });
 
+  /* sneaker-run video: play only while visible, sound toggle */
+  $$('.o-video, .i-vid').forEach(function (box) {
+    var vid = $('video', box), snd = $('.vid-sound', box);
+    if ('IntersectionObserver' in window && !reduce) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); } else vid.pause(); });
+      }, { threshold: 0.4 }).observe(vid);
+    }
+    snd.addEventListener('click', function () {
+      vid.muted = !vid.muted;
+      snd.setAttribute('aria-pressed', String(!vid.muted));
+      snd.textContent = vid.muted ? 'Sound off' : 'Sound on';
+      snd.setAttribute('aria-label', vid.muted ? 'Turn sound on' : 'Turn sound off');
+      if (vid.paused) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); }
+    });
+  });
+
+  /* film: click to play inline with controls */
+  var film = $('.film');
+  if (film) {
+    var fv = $('video', film), fb = $('.film-play', film);
+    fb.addEventListener('click', function () { fv.controls = true; film.classList.add('playing'); fv.play(); });
+    fv.addEventListener('ended', function () { film.classList.remove('playing'); fv.controls = false; fv.load(); });
+  }
+
   /* toast for placeholder links */
   var toast = $('.toast'), tt;
   $$('[data-soon]').forEach(function (a) {
