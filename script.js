@@ -82,7 +82,7 @@
   var img = $('img', lb), cap = $('.lb-cap', lb), set = [], idx = 0, last = null;
   function show(i) {
     idx = (i + set.length) % set.length; var im = set[idx];
-    img.src = im.currentSrc || im.src; img.alt = im.alt;
+    img.src = im.getAttribute("data-full") || im.currentSrc || im.src; img.alt = im.alt;
     cap.textContent = (im.getAttribute('data-cap') || '') + '  ' + (idx + 1) + '/' + set.length;
   }
   function open(im) {
